@@ -55,6 +55,9 @@
 
 @implementation InstagramMedia
 
+@synthesize likesCount= _likesCount;
+@synthesize commentCount= _commentCount;
+
 - (instancetype)initWithInfo:(NSDictionary *)info
 {
     self = [super initWithInfo:info];
@@ -65,12 +68,17 @@
         self.createdDate = [[NSDate alloc] initWithTimeIntervalSince1970:[info[kCreatedDate] doubleValue]];
         self.link = [[NSString alloc] initWithString:info[kLink]];
         self.caption = [[InstagramComment alloc] initWithInfo:info[kCaption]];
+        
+        //likes
+        _likesCount = [(info[kLikes][kCount]) integerValue];
         self.mLikes = [[NSMutableArray alloc] init];
         for (NSDictionary *userInfo in (info[kLikes])[kData]) {
             InstagramUser *user = [[InstagramUser alloc] initWithInfo:userInfo];
             [self.mLikes addObject:user];
         }
         
+        //comments
+        _commentCount = [(info[kComments][kCount]) integerValue];
         self.mComments = [[NSMutableArray alloc] init];
         for (NSDictionary *commentInfo in (info[kComments])[kData]) {
             InstagramComment *comment = [[InstagramComment alloc] initWithInfo:commentInfo];
@@ -140,7 +148,7 @@
 
 - (NSInteger)likesCount
 {
-    return [self.mLikes count];
+    return _likesCount;
 }
 
 - (NSArray *)comments
@@ -150,7 +158,7 @@
 
 - (NSInteger)commentCount
 {
-    return [self.mComments count];
+    return _commentCount;
 }
 
 - (NSArray *)usersInPhoto
